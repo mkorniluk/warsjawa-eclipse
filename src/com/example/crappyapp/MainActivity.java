@@ -7,15 +7,18 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Locale;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,13 +46,27 @@ public class MainActivity extends Activity {
 	}
 
 	public class SectionsPagerAdapter extends PagerAdapter {
-		@Override
+		@SuppressLint("NewApi") @Override
 		public Object instantiateItem(ViewGroup container, int position) {
 			View rootView = View.inflate(container.getContext(),
 					R.layout.page, null);
 			final ImageView imageIV = (ImageView) rootView
 					.findViewById(R.id.image);
-
+			
+			Display display = getWindowManager().getDefaultDisplay();
+			Point size = new Point();
+			int width, height;
+			if (android.os.Build.VERSION.SDK_INT >= 13){
+				display.getSize(size);
+				width = size.x;
+				height = size.y;				
+			} else {
+				width = display.getWidth();  // deprecated
+				height = display.getHeight();  // deprecated
+			}
+			String url = "http://lorempixel.com/"+String.valueOf(width)+"/"+String.valueOf(height)+"/cats/";
+			Log.e("ERER", url);
+			
 			new AsyncTask<String, Void, Bitmap>() {
 				protected Bitmap doInBackground(String... url) {
 					Bitmap bitmap = null;
@@ -65,7 +82,7 @@ public class MainActivity extends Activity {
 				protected void onPostExecute(Bitmap result) {
 					imageIV.setImageBitmap(result);
 				}
-			}.execute(new String[] { "http://lorempixel.com/1920/1080/cats/" });
+			}.execute(url);
 
 			TextView labelTV = (TextView) rootView.findViewById(R.id.label);
 			String label = "This is an awesome picture of a furry cat no. "
