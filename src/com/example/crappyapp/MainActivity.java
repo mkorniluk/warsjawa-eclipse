@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
 				protected void onPostExecute(Bitmap result) {
 					imageIV.setImageBitmap(result);
 				}
-			}.execute(new String[] { "http://lorempixel.com/1920/1080/cats/" });
+			}.execute(new String[] { "http://placehold.it/1920x1080" });
 
 			TextView labelTV = (TextView) rootView.findViewById(R.id.label);
 			String label = "This is an awesome picture of a furry cat no. "
